@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller Valenciano Guayaquil 2025</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="img/Logo.png" alt="Logo Taller Valenciano Guayaquil 2025">
+            </div>
+            <div class="nav-container">
+                <ul class="nav-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#acerca">Acerca de</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section id="inicio" class="hero">
+        <video autoplay loop muted playsinline>
+            <source src="img/Video.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+        <div class="hero-content">
+            <h2>Bienvenido a Taller Valenciano Guayaquil 2025</h2>
+            <p>Especialistas en servicios automotrices de calidad. Mantenimiento, reparaciones y más para tu vehículo.</p>
+            <a href="#contacto" class="btn">Solicitar Servicio</a>
+        </div>
+    </section>
+
+    <section id="servicios" class="services">
+        <div class="container">
+            <h2>Nuestros Servicios</h2>
+            <div class="service-grid">
+                <div class="service-item">
+                    <img src="img/1.jpg" alt="Mecánica Básica">
+                    <h3>Mecánica Básica</h3>
+                    <p>Mantenimiento y reparación de motores de vehículos en Guayaquil, revisión inmediata a sistemas de frenos, embrague, dirección, amortiguación, cableado, problemas de fugas de aceite y todo lo relacionado al mantenimiento de tu auto.</p>
+                    <p><strong>Desde $40.00</strong></p>
+                </div>
+                <div class="service-item">
+                    <img src="img/2.jpg" alt="Revisión del sistema de frenos">
+                    <h3>Revisión del sistema de frenos</h3>
+                    <p>Somos un taller automotriz especialista en la limpieza, revisión, ajustes, mantenimiento, así como el revestimiento y rectificación del sistema de frenos de cualquier clase de vehículos en Guayaquil, Ecuador.</p>
+                    <p><strong>Desde $3.50</strong></p>
+                </div>
+                <div class="service-item">
+                    <img src="img/3.jpg" alt="Revisión del Sistema de Enfriamiento">
+                    <h3>Revisión del Sistema de Enfriamiento</h3>
+                    <p>Somos expertos en la revisión y mantenimiento del sistema de enfriamiento y cambio de anticongelante de tu vehículo. Un taller experto en la reparación del aire acondicionado de tu vehículo en Guayaquil, Ecuador.</p>
+                    <p><strong>Desde $5.00</strong></p>
+                </div>
+                <div class="service-item">
+                    <img src="img/4.jpg" alt="Cambio de amortiguadores">
+                    <h3>Cambio de amortiguadores</h3>
+                    <p>Somos un taller mecánico especialista en el cambio o chequeo de cauchos, amortiguadores o partes de suspensión con las mejores marcas para toda clase de vehículos en Guayaquil, Ecuador.</p>
+                    <p><strong>Desde $8.50</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="acerca" class="about">
+        <div class="container">
+            <h2>Acerca de Nosotros</h2>
+            <p>Con más de 30 años de experiencia en Guayaquil, Taller Valenciano se ha convertido en el referente de calidad y confianza en servicios automotrices. Nuestro compromiso es brindar atención personalizada y soluciones eficientes para mantener tu vehículo en óptimas condiciones.</p>
+            <div class="about-cards">
+                <div class="about-card">
+                    <div class="card-number">30+</div>
+                    <p>años de experiencia</p>
+                </div>
+                <div class="about-card">
+                    <div class="card-number">10,000+</div>
+                    <p>vehículos atendidos</p>
+                </div>
+                <div class="about-card">
+                    <div class="card-number">100%</div>
+                    <p>satisfacción garantizada</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="contact">
+        <div class="container">
+            <h2>Contáctanos</h2>
+            <p>Estamos aquí para ayudarte con tu vehículo.</p>
+            <form id="contact-form">
+                <label for="name">Nombre completo:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="phone">Teléfono:</label>
+                <input type="tel" id="phone" name="phone" required>
+
+                <label for="service">Servicio requerido:</label>
+                <select id="service" name="service" required>
+                    <option value="">Selecciona un servicio</option>
+                    <option value="mantenimiento">Mantenimiento general</option>
+                    <option value="pulido">Pulido tipo espejo</option>
+                    <option value="proteccion">Protección cerámica CC36</option>
+                    <option value="pintura">Pintura y detallado</option>
+                    <option value="aceite">Cambio de aceite</option>
+                    <option value="revision">Revisión completa</option>
+                </select>
+
+                <label for="message">Mensaje adicional:</label>
+                <textarea id="message" name="message" required></textarea>
+
+                <button type="submit" class="btn">Enviar Consulta</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <img src="img/Logo.png" alt="Logo Taller Valenciano Guayaquil" class="footer-logo">
+                    <p>Km 6 Autopista Terminal Terrestre<br>Pascuales (Narcisa de Jesús), Guayaquil - Ecuador</p>
+                    <p><i class="fas fa-phone"></i> 0978906962</p>
+                    <p><i class="fas fa-envelope"></i> info@jacsautocare.com</p>
+                    <p><i class="fas fa-globe"></i> www.jacsautocare.com</p>
+                </div>
+                <div class="footer-column">
+                    <h4>ATAJOS</h4>
+                    <ul>
+                        <li><a href="#">Pintura Automotriz en Guayaquil</a></li>
+                        <li><a href="#">Car Detailing en Guayaquil</a></li>
+                        <li><a href="#">Tapicería Automotriz en Guayaquil</a></li>
+                        <li><a href="#">Car Wash en Guayaquil</a></li>
+                        <li><a href="#">Lubricadora en Guayaquil</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>SÍGUENOS</h4>
+                    <ul>
+                        <li><i class="fab fa-facebook"></i> <a href="#">Facebook</a></li>
+                        <li><i class="fab fa-instagram"></i> <a href="#">Instagram</a></li>
+                        <li><i class="fab fa-youtube"></i> <a href="#">YouTube</a></li>
+                        <li><i class="fab fa-tiktok"></i> <a href="#">TikTok</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>HORARIOS DE ATENCIÓN</h4>
+                    <div class="horarios">
+                        <div class="horario-item">
+                            <span>Lunes - Viernes:</span>
+                            <span>8:00 - 17:00</span>
+                        </div>
+                        <div class="horario-item">
+                            <span>Sábados:</span>
+                            <span>8:00 - 12:00</span>
+                        </div>
+                        <div class="horario-item">
+                            <span class="domingo">Domingo: NO ATENDEMOS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Taller Valenciano Guayaquil - Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
