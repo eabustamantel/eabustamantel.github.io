@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Taller Valenciano Guayaquil 2025</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-dashboard">
+        <div class="admin-container">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <img src="img/Logo.png" alt="Logo Taller Valenciano" class="sidebar-logo">
+                    <h3>Panel de Administración</h3>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="#" class="sidebar-link active" onclick="showSection('users')">
+                        <i class="fas fa-users"></i> Usuarios
+                    </a>
+                    <a href="#" class="sidebar-link" onclick="showSection('cases')">
+                        <i class="fas fa-tools"></i> Casos
+                    </a>
+                    <a href="#" class="sidebar-link" onclick="showSection('history')">
+                        <i class="fas fa-history"></i> Servicios
+                    </a>
+                    <a href="#" class="sidebar-link" onclick="showSection('inventory')">
+                        <i class="fas fa-boxes"></i> Inventario
+                    </a>
+                    <a href="#" class="sidebar-link" onclick="showSection('reports')">
+                        <i class="fas fa-chart-bar"></i> Reportes
+                    </a>
+                    <a href="#" class="sidebar-link" onclick="showSection('settings')">
+                        <i class="fas fa-cog"></i> Configuración
+                    </a>
+                </nav>
+                <div class="sidebar-footer">
+                    <button class="btn logout-btn" onclick="logout()">Cerrar Sesión</button>
+                </div>
+            </aside>
+            <main class="main-content">
+                <div class="welcome-box">
+                    <i class="fas fa-user"></i>
+                    <span id="welcome-message">Bienvenido al área de administración.</span>
+                </div>
+                <div id="admin-content" class="admin-content">
+                <div id="users" class="admin-section active">
+                    <h3>Registro de Usuarios</h3>
+                    <form id="user-form" class="admin-form" onsubmit="addUser(); return false;">
+                        <input type="text" id="user-name" placeholder="Nombre" required>
+                        <input type="text" id="user-apellido" placeholder="Apellido" required>
+                        <input type="text" id="user-cedula" placeholder="Cédula" required>
+                        <input type="email" id="user-email" placeholder="Correo electrónico" required>
+                        <select id="user-role" required>
+                            <option value="">Seleccionar rol</option>
+                            <option value="Administrador">Administrador</option>
+                            <option value="Mecánico">Mecánico</option>
+                            <option value="Recepcionista">Recepcionista</option>
+                            <option value="Cliente">Cliente</option>
+                        </select>
+                        <button type="submit">Agregar Usuario</button>
+                    </form>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Cédula</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div id="cases" class="admin-section">
+                    <h3>Asignación de Casos</h3>
+                    <form id="case-form" class="admin-form" onsubmit="addCase(); return false;">
+                        <input type="text" id="case-number" placeholder="Número de caso" required>
+                        <input type="text" id="case-placa" placeholder="Placa" required>
+                        <input type="text" id="case-marca" placeholder="Marca" required>
+                        <input type="text" id="case-modelo" placeholder="Modelo" required>
+                        <input type="text" id="case-problema" placeholder="Problema reportado" required>
+                        <input type="text" id="case-mecanico" placeholder="Mecánico asignado" required>
+                        <select id="case-estado" required>
+                            <option value="">Seleccionar estado</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+                        <button type="submit">Agregar Caso</button>
+                    </form>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Caso</th>
+                                <th>Placa</th>
+                                <th>Vehículo</th>
+                                <th>Problema</th>
+                                <th>Mecánico</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div id="history" class="admin-section">
+                    <h3>Historial de Servicios</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Vehículo</th>
+                                <th>Fecha</th>
+                                <th>Descripción</th>
+                                <th>Costo</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div id="inventory" class="admin-section">
+                    <h3>Inventario de Repuestos</h3>
+                    <form id="inventory-form" class="admin-form" onsubmit="addInventory(); return false;">
+                        <input type="text" id="inv-name" placeholder="Nombre del repuesto" required>
+                        <input type="number" id="inv-stock" placeholder="Stock" required>
+                        <input type="number" step="0.01" id="inv-price" placeholder="Precio" required>
+                        <input type="text" id="inv-supplier" placeholder="Proveedor" required>
+                        <button type="submit">Agregar Repuesto</button>
+                    </form>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Stock</th>
+                                <th>Precio</th>
+                                <th>Proveedor</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div id="reports" class="admin-section">
+                    <h3>Reportes y Estadísticas</h3>
+                    <!-- Estadísticas se cargarán aquí -->
+                </div>
+
+                <div id="settings" class="admin-section">
+                    <h3>Configuración del Taller</h3>
+                    <div class="admin-form">
+                        <label>Nombre del Taller:</label>
+                        <input type="text" value="Taller Valenciano Guayaquil" readonly>
+
+                        <label>Dirección:</label>
+                        <input type="text" value="Km 6 Autopista Terminal Terrestre, Pascuales (Narcisa de Jesús), Guayaquil - Ecuador" readonly>
+
+                        <label>Teléfono:</label>
+                        <input type="text" value="0978906962" readonly>
+
+                        <label>Email:</label>
+                        <input type="email" value="info@jacsautocare.com" readonly>
+
+                        <label>Logo:</label>
+                        <input type="text" value="/img/Logo.png" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
