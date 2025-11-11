@@ -489,6 +489,28 @@ section {
     overflow: hidden;
 }
 
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
 .sidebar {
     width: 280px;
     background: linear-gradient(135deg, #1e3a5f 0%, #2c3e50 100%);
@@ -501,6 +523,7 @@ section {
     left: 0;
     top: 0;
     z-index: 1000;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -894,5 +917,102 @@ footer {
 
     .horario-item span:last-child {
         text-align: left;
+    }
+
+    /* Admin Dashboard Responsivo */
+    .sidebar-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .admin-content {
+        padding: 20px;
+    }
+
+    .welcome-box {
+        padding: 15px 20px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .welcome-box i {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .admin-table {
+        overflow-x: auto;
+        display: block;
+        white-space: nowrap;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        min-width: 120px;
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .admin-form {
+        gap: 10px;
+    }
+
+    .admin-form input,
+    .admin-form select,
+    .admin-form textarea {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .admin-form button {
+        width: 100%;
+        padding: 12px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .sidebar-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .admin-content {
+        padding: 25px;
+    }
+
+    .admin-table {
+        overflow-x: auto;
+        display: block;
+        white-space: nowrap;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        min-width: 100px;
+        padding: 10px;
     }
 }

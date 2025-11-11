@@ -294,6 +294,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Función para alternar la sidebar
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
 // Agregar clase 'active' al enlace de navegación basado en la sección visible
 window.addEventListener('scroll', function() {
     const sections = document.querySelectorAll('section');
