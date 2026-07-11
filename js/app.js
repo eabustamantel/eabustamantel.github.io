@@ -60,7 +60,7 @@
 
   /* ---------- 2. ESTADO DE LA APLICACIÓN ---------- */
   const state = {
-    tracks: [],            // { title, artist, album, src, isObjectUrl }
+    tracks: [],            // { title, artist, album, src, cover }
     filteredIndices: [],   // índices visibles según el buscador
     currentIndex: -1,
     isPlaying: false,
@@ -122,36 +122,136 @@
     input.style.setProperty('--val', `${pct}%`);
   }
 
-  /* ---------- 4. CARGA DE LA BIBLIOTECA ---------- */
+  /* ---------- 4. CARGA DE LA BIBLIOTECA (100% AUTOMÁTICA) ----------
+     La carpeta "musica" NUNCA se lista a mano: el reproductor detecta
+     los archivos que hay dentro probando, en orden, estas estrategias:
+
+     1) API de GitHub → funciona cuando el sitio está publicado en
+        GitHub Pages (lee el contenido real de la carpeta "musica"
+        del repositorio, sin importar cuántos archivos agregues o
+        quites).
+     2) Listado de directorio del servidor → funciona al probar en
+        local con un servidor que muestra el índice de la carpeta
+        (por ejemplo "python3 -m http.server").
+     3) musica/playlist.json → único respaldo final, por si el sitio
+        se aloja en un servidor que no permite ninguna de las dos
+        opciones anteriores. No es obligatorio mantenerlo.
+  */
+
+  const AUDIO_EXT = /\.(mp3|wav|ogg|oga|m4a|flac|aac|weba)$/i;
 
   async function init() {
     restoreSettings();
     wireStaticControls();
 
-    dom.libraryStatus.textContent = 'Leyendo carpeta “musica”…';
+    dom.libraryStatus.textContent = 'Detectando canciones en “musica”…';
 
-    try {
-      const ok = await loadFromManifest();
-      if (!ok) throw new Error('manifest-vacio');
-    } catch (err) {
-      dom.libraryStatus.textContent = 'No se pudo leer la carpeta “musica”.';
+    const estrategias = [loadFromGitHubApi, loadFromDirectoryListing, loadFromManifest];
+    let cargado = false;
+
+    for (const estrategia of estrategias) {
+      try {
+        const tracks = await estrategia();
+        if (tracks && tracks.length > 0) { cargado = true; break; }
+      } catch (err) {
+        // Se prueba la siguiente estrategia en silencio
+      }
+    }
+
+    if (!cargado) {
+      dom.libraryStatus.textContent = 'No se encontraron canciones en “musica”.';
       showToast(
-        'No se encontró musica/playlist.json. Sirve el sitio con un servidor local (por ejemplo "python3 -m http.server") y agrega tus canciones a musica/playlist.json.',
+        'No se detectó ninguna canción. Si estás en local, usa un servidor (python3 -m http.server). Si estás en GitHub Pages, confirma que los archivos están dentro de la carpeta "musica" del repositorio.',
         'error'
       );
       renderEmptyLibrary();
     }
   }
 
-  /** Intenta cargar musica/playlist.json vía fetch. Funciona cuando la
-   *  página se sirve con un servidor HTTP (no con doble clic / file://). */
+  /** Estrategia 1: lee el contenido real de la carpeta "musica" del
+   *  repositorio de GitHub mediante la API pública de GitHub. Así, al
+   *  agregar o quitar archivos en el repo, la lista se actualiza sola
+   *  sin tocar ningún archivo de configuración. */
+  async function loadFromGitHubApi() {
+    if (!location.hostname.endsWith('github.io')) throw new Error('no-es-github-pages');
+
+    const owner = location.hostname.split('.')[0];
+    const segmentoRepo = location.pathname.split('/').filter(Boolean)[0];
+
+    // Prueba primero como página de usuario/organización (repo == hostname)
+    // y, si no existe, como página de proyecto (repo == primer segmento de la URL).
+    const repositoriosCandidatos = [location.hostname];
+    if (segmentoRepo) repositoriosCandidatos.push(segmentoRepo);
+
+    let ultimoError = null;
+
+    for (const repo of repositoriosCandidatos) {
+      try {
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/musica`;
+        const res = await fetch(apiUrl, { headers: { Accept: 'application/vnd.github+json' } });
+        if (!res.ok) { ultimoError = new Error(`github-api-${res.status}`); continue; }
+
+        const items = await res.json();
+        if (!Array.isArray(items)) { ultimoError = new Error('respuesta-no-es-lista'); continue; }
+
+        const audioItems = items
+          .filter((it) => it.type === 'file' && AUDIO_EXT.test(it.name))
+          .sort((a, b) => a.name.localeCompare(b.name, 'es', { numeric: true }));
+
+        if (audioItems.length === 0) { ultimoError = new Error('sin-audio-en-repo'); continue; }
+
+        state.tracks = audioItems.map((it) => {
+          const meta = parseFilename(it.name);
+          return { title: meta.title, artist: meta.artist, album: '', src: it.download_url, cover: '' };
+        });
+
+        dom.libraryStatus.textContent = '';
+        finishLibraryLoad('GitHub · detección automática');
+        return state.tracks;
+      } catch (e) {
+        ultimoError = e;
+      }
+    }
+
+    throw ultimoError || new Error('github-api-fallo');
+  }
+
+  /** Estrategia 2: cuando se sirve la carpeta con un servidor local que
+   *  muestra el índice de directorio (por ejemplo "python3 -m http.server"),
+   *  se lee ese listado HTML y se extraen los enlaces a archivos de audio. */
+  async function loadFromDirectoryListing() {
+    const res = await fetch('musica/', { cache: 'no-store' });
+    if (!res.ok) throw new Error('sin-listado-de-directorio');
+
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    const nombres = Array.from(doc.querySelectorAll('a'))
+      .map((a) => decodeURIComponent((a.getAttribute('href') || '').split('?')[0]))
+      .filter((href) => AUDIO_EXT.test(href) && !href.includes('/'))
+      .sort((a, b) => a.localeCompare(b, 'es', { numeric: true }));
+
+    if (nombres.length === 0) throw new Error('listado-sin-audio');
+
+    state.tracks = nombres.map((nombre) => {
+      const meta = parseFilename(nombre);
+      return { title: meta.title, artist: meta.artist, album: '', src: `musica/${nombre}`, cover: '' };
+    });
+
+    dom.libraryStatus.textContent = '';
+    finishLibraryLoad('listado de carpeta (servidor local)');
+    return state.tracks;
+  }
+
+  /** Estrategia 3 (respaldo final, opcional): musica/playlist.json.
+   *  Solo se usa si las dos estrategias automáticas anteriores fallan. */
   async function loadFromManifest() {
     const res = await fetch('musica/playlist.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error('No se encontró playlist.json');
+    if (!res.ok) throw new Error('sin-playlist-json');
     const data = await res.json();
     const pistas = Array.isArray(data.pistas) ? data.pistas : [];
 
-    if (pistas.length === 0) return false;
+    if (pistas.length === 0) throw new Error('playlist-json-vacio');
 
     state.tracks = pistas.map((p) => ({
       title: p.titulo || parseFilename(p.src).title,
@@ -159,12 +259,11 @@
       album: p.album || '',
       src: `musica/${p.src}`,
       cover: p.cover ? `musica/${p.cover}` : '',
-      isObjectUrl: false,
     }));
 
     dom.libraryStatus.textContent = '';
-    finishLibraryLoad('musica/playlist.json');
-    return true;
+    finishLibraryLoad('musica/playlist.json (respaldo)');
+    return state.tracks;
   }
 
   function finishLibraryLoad(origen) {
@@ -186,9 +285,9 @@
     dom.tracklist.innerHTML = `
       <li class="library__empty">
         No hay pistas cargadas todavía.<br>
-        Coloca tus archivos de audio en la carpeta <code>musica</code> y
-        agrégalos a <code>musica/playlist.json</code>. Luego recarga esta
-        página (sirviéndola desde un servidor local).
+        Solo coloca tus archivos de audio dentro de la carpeta
+        <code>musica</code> del repositorio y recarga la página: se
+        detectan automáticamente, sin editar nada.
       </li>`;
     dom.libraryCount.textContent = '';
   }
