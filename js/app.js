@@ -28,8 +28,6 @@
     libraryStatus: document.getElementById('libraryStatus'),
     libraryCount: document.getElementById('libraryCount'),
     searchInput: document.getElementById('searchInput'),
-    pickFolderBtn: document.getElementById('pickFolderBtn'),
-    folderInput: document.getElementById('folderInput'),
 
     disc: document.getElementById('disc'),
     discArt: document.getElementById('discArt'),
@@ -124,8 +122,6 @@
     input.style.setProperty('--val', `${pct}%`);
   }
 
-  const AUDIO_EXT = /\.(mp3|wav|ogg|oga|m4a|flac|aac|weba|webm)$/i;
-
   /* ---------- 4. CARGA DE LA BIBLIOTECA ---------- */
 
   async function init() {
@@ -138,11 +134,10 @@
       const ok = await loadFromManifest();
       if (!ok) throw new Error('manifest-vacio');
     } catch (err) {
-      dom.libraryStatus.textContent =
-        'No se pudo leer musica/playlist.json automáticamente.';
+      dom.libraryStatus.textContent = 'No se pudo leer la carpeta “musica”.';
       showToast(
-        'No se encontró la carpeta "musica" servida por un servidor local. Usa "Elegir carpeta" para cargar tu música manualmente.',
-        'info'
+        'No se encontró musica/playlist.json. Sirve el sitio con un servidor local (por ejemplo "python3 -m http.server") y agrega tus canciones a musica/playlist.json.',
+        'error'
       );
       renderEmptyLibrary();
     }
@@ -172,39 +167,6 @@
     return true;
   }
 
-  /** Carga manual: el usuario elige una carpeta de su equipo mediante
-   *  el input con atributo "webkitdirectory". No requiere servidor. */
-  function loadFromFileList(fileList) {
-    const files = Array.from(fileList).filter((f) => AUDIO_EXT.test(f.name));
-
-    if (files.length === 0) {
-      showToast('La carpeta elegida no contiene archivos de audio compatibles.');
-      return;
-    }
-
-    // Libera URLs de objeto anteriores para no filtrar memoria
-    state.tracks
-      .filter((t) => t.isObjectUrl)
-      .forEach((t) => URL.revokeObjectURL(t.src));
-
-    state.tracks = files
-      .sort((a, b) => a.name.localeCompare(b, 'es', { numeric: true }))
-      .map((file) => {
-        const meta = parseFilename(file.name);
-        return {
-          title: meta.title,
-          artist: meta.artist,
-          album: '',
-          src: URL.createObjectURL(file),
-          cover: '',
-          isObjectUrl: true,
-        };
-      });
-
-    dom.libraryStatus.textContent = '';
-    finishLibraryLoad('carpeta local');
-  }
-
   function finishLibraryLoad(origen) {
     state.filteredIndices = state.tracks.map((_, i) => i);
     renderTracklist();
@@ -224,9 +186,9 @@
     dom.tracklist.innerHTML = `
       <li class="library__empty">
         No hay pistas cargadas todavía.<br>
-        Coloca tus archivos en la carpeta <code>musica</code> y edita
-        <code>musica/playlist.json</code>, o usa el botón
-        “Elegir carpeta” para seleccionarlos manualmente.
+        Coloca tus archivos de audio en la carpeta <code>musica</code> y
+        agrégalos a <code>musica/playlist.json</code>. Luego recarga esta
+        página (sirviéndola desde un servidor local).
       </li>`;
     dom.libraryCount.textContent = '';
   }
@@ -448,10 +410,6 @@
 
     // Buscador
     dom.searchInput.addEventListener('input', applySearchFilter);
-
-    // Selector de carpeta manual
-    dom.pickFolderBtn.addEventListener('click', () => dom.folderInput.click());
-    dom.folderInput.addEventListener('change', (e) => loadFromFileList(e.target.files));
 
     // Inicializa el pintado de los sliders
     paintRange(dom.seekBar);

@@ -44,14 +44,6 @@
         </svg>
         <input type="search" id="searchInput" placeholder="Buscar pista o artista…" autocomplete="off">
       </div>
-      <button class="btn-folder" id="pickFolderBtn" title="Elegir carpeta de música manualmente" type="button">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-        </svg>
-        <span>Elegir carpeta</span>
-      </button>
-      <!-- Input oculto usado para la carga manual de carpetas (fallback sin servidor) -->
-      <input type="file" id="folderInput" webkitdirectory directory multiple hidden accept="audio/*">
     </div>
 
     <div class="library__status" id="libraryStatus" role="status" aria-live="polite"></div>
