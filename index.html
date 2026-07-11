@@ -1,181 +1,150 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taller Valenciano Guayaquil 2025</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinta — Reproductor de música local</title>
+<meta name="description" content="Reproductor de música local que lee la carpeta 'musica'. HTML, CSS y JavaScript puro.">
+
+<!-- Tipografías: display técnica + cuerpo + monoespaciada para datos -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">
-                <img src="img/Logo.png" alt="Logo Taller Valenciano Guayaquil 2025">
-            </div>
-            <div class="nav-container">
-                <ul class="nav-links">
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#servicios">Servicios</a></li>
-                    <li><a href="#acerca">Acerca de</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                    <li><a href="login.html">Iniciar Sesión</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
 
-    <section id="inicio" class="hero">
-        <video autoplay loop muted playsinline>
-            <source src="img/Video.mp4" type="video/mp4">
-            Tu navegador no soporta el elemento de video.
-        </video>
-        <div class="hero-content">
-            <h2>Bienvenido a Taller Valenciano Guayaquil 2025</h2>
-            <p>Especialistas en servicios automotrices de calidad. Mantenimiento, reparaciones y más para tu vehículo.</p>
-            <a href="#contacto" class="btn">Solicitar Servicio</a>
+<!-- Textura de ruido sutil sobre toda la página -->
+<div class="grain" aria-hidden="true"></div>
+
+<div class="app">
+
+  <!-- ============ BARRA LATERAL: BIBLIOTECA ============ -->
+  <aside class="library" aria-label="Biblioteca de canciones">
+
+    <div class="library__header">
+      <div class="logo">
+        <span class="logo__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12" cy="12" r="2.4" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="logo__text">CINTA</span>
+      </div>
+      <p class="library__eyebrow">Carpeta <code>/musica</code></p>
+    </div>
+
+    <div class="library__toolbar">
+      <div class="search" role="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="search" id="searchInput" placeholder="Buscar pista o artista…" autocomplete="off">
+      </div>
+      <button class="btn-folder" id="pickFolderBtn" title="Elegir carpeta de música manualmente" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        <span>Elegir carpeta</span>
+      </button>
+      <!-- Input oculto usado para la carga manual de carpetas (fallback sin servidor) -->
+      <input type="file" id="folderInput" webkitdirectory directory multiple hidden accept="audio/*">
+    </div>
+
+    <div class="library__status" id="libraryStatus" role="status" aria-live="polite"></div>
+
+    <ol class="tracklist" id="tracklist" aria-label="Lista de pistas"></ol>
+
+    <p class="library__count" id="libraryCount"></p>
+  </aside>
+
+  <!-- ============ PANEL PRINCIPAL: PLATO ============ -->
+  <main class="deck">
+
+    <div class="deck__top">
+      <div class="deck__mode" role="group" aria-label="Modos de reproducción">
+        <button class="mode-btn" id="shuffleBtn" type="button" title="Aleatorio" aria-pressed="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 6h3.5a4 4 0 0 1 3.3 1.75L15 17a4 4 0 0 0 3.3 1.75H21M3 18h3.5a4 4 0 0 0 3.3-1.75l.35-.5M15 7a4 4 0 0 1 3.3-1.75H21M18 3l3 2.5L18 8M18 16l3 2.5L18 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="mode-btn" id="repeatBtn" type="button" title="Repetir" aria-pressed="false" data-mode="off">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M17 2l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="mode-btn__badge" id="repeatOneBadge">1</span>
+        </button>
+      </div>
+
+      <div class="deck__eq" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Disco giratorio + anillo visualizador (elemento distintivo) -->
+    <div class="stage">
+      <canvas id="visualizer" class="stage__ring" width="520" height="520" aria-hidden="true"></canvas>
+      <div class="stage__disc" id="disc">
+        <div class="stage__disc-art" id="discArt">
+          <svg viewBox="0 0 24 24" width="42" height="42" aria-hidden="true">
+            <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.4" fill="none"/>
+            <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.4" fill="none"/>
+          </svg>
         </div>
-    </section>
+        <div class="stage__disc-hole"></div>
+      </div>
+    </div>
 
-    <section id="servicios" class="services">
-        <div class="container">
-            <h2>Nuestros Servicios</h2>
-            <div class="service-grid">
-                <div class="service-item">
-                    <img src="img/1.jpg" alt="Mecánica Básica">
-                    <h3>Mecánica Básica</h3>
-                    <p>Mantenimiento y reparación de motores de vehículos en Guayaquil, revisión inmediata a sistemas de frenos, embrague, dirección, amortiguación, cableado, problemas de fugas de aceite y todo lo relacionado al mantenimiento de tu auto.</p>
-                    <p><strong>Desde $40.00</strong></p>
-                </div>
-                <div class="service-item">
-                    <img src="img/2.jpg" alt="Revisión del sistema de frenos">
-                    <h3>Revisión del sistema de frenos</h3>
-                    <p>Somos un taller automotriz especialista en la limpieza, revisión, ajustes, mantenimiento, así como el revestimiento y rectificación del sistema de frenos de cualquier clase de vehículos en Guayaquil, Ecuador.</p>
-                    <p><strong>Desde $3.50</strong></p>
-                </div>
-                <div class="service-item">
-                    <img src="img/3.jpg" alt="Revisión del Sistema de Enfriamiento">
-                    <h3>Revisión del Sistema de Enfriamiento</h3>
-                    <p>Somos expertos en la revisión y mantenimiento del sistema de enfriamiento y cambio de anticongelante de tu vehículo. Un taller experto en la reparación del aire acondicionado de tu vehículo en Guayaquil, Ecuador.</p>
-                    <p><strong>Desde $5.00</strong></p>
-                </div>
-                <div class="service-item">
-                    <img src="img/4.jpg" alt="Cambio de amortiguadores">
-                    <h3>Cambio de amortiguadores</h3>
-                    <p>Somos un taller mecánico especialista en el cambio o chequeo de cauchos, amortiguadores o partes de suspensión con las mejores marcas para toda clase de vehículos en Guayaquil, Ecuador.</p>
-                    <p><strong>Desde $8.50</strong></p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Info de la pista actual -->
+    <div class="now-playing">
+      <p class="now-playing__eyebrow" id="nowPlayingEyebrow">Nada en reproducción</p>
+      <h1 class="now-playing__title" id="nowPlayingTitle">Elige una pista de tu carpeta “musica”</h1>
+      <p class="now-playing__artist" id="nowPlayingArtist">—</p>
+    </div>
 
-    <section id="acerca" class="about">
-        <div class="container">
-            <h2>Acerca de Nosotros</h2>
-            <p>Con más de 30 años de experiencia en Guayaquil, Taller Valenciano se ha convertido en el referente de calidad y confianza en servicios automotrices. Nuestro compromiso es brindar atención personalizada y soluciones eficientes para mantener tu vehículo en óptimas condiciones.</p>
-            <div class="about-cards">
-                <div class="about-card">
-                    <div class="card-number">30+</div>
-                    <p>años de experiencia</p>
-                </div>
-                <div class="about-card">
-                    <div class="card-number">10,000+</div>
-                    <p>vehículos atendidos</p>
-                </div>
-                <div class="about-card">
-                    <div class="card-number">100%</div>
-                    <p>satisfacción garantizada</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Barra de progreso tipo cinta -->
+    <div class="scrubber">
+      <span class="scrubber__time" id="currentTime">0:00</span>
+      <input type="range" id="seekBar" class="scrubber__bar" min="0" max="100" value="0" step="0.1"
+             aria-label="Progreso de la pista">
+      <span class="scrubber__time" id="durationTime">0:00</span>
+    </div>
 
-    <section id="contacto" class="contact">
-        <div class="container">
-            <h2>Contáctanos</h2>
-            <p>Estamos aquí para ayudarte con tu vehículo.</p>
-            <form id="contact-form">
-                <label for="name">Nombre completo:</label>
-                <input type="text" id="name" name="name" required>
+    <!-- Transporte principal -->
+    <div class="transport">
+      <button class="transport__btn transport__btn--ghost" id="prevBtn" type="button" title="Anterior">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM19 6l-9 6 9 6z"/></svg>
+      </button>
 
-                <label for="email">Correo electrónico:</label>
-                <input type="email" id="email" name="email" required>
+      <button class="transport__btn transport__btn--play" id="playBtn" type="button" title="Reproducir / Pausar">
+        <svg id="playIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="pauseIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" hidden><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+      </button>
 
-                <label for="phone">Teléfono:</label>
-                <input type="tel" id="phone" name="phone" required>
+      <button class="transport__btn transport__btn--ghost" id="nextBtn" type="button" title="Siguiente">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM5 6l9 6-9 6z"/></svg>
+      </button>
+    </div>
 
-                <label for="service">Servicio requerido:</label>
-                <select id="service" name="service" required>
-                    <option value="">Selecciona un servicio</option>
-                    <option value="mantenimiento">Mantenimiento general</option>
-                    <option value="pulido">Pulido tipo espejo</option>
-                    <option value="proteccion">Protección cerámica CC36</option>
-                    <option value="pintura">Pintura y detallado</option>
-                    <option value="aceite">Cambio de aceite</option>
-                    <option value="revision">Revisión completa</option>
-                </select>
+    <!-- Volumen -->
+    <div class="volume">
+      <button class="volume__btn" id="muteBtn" type="button" title="Silenciar">
+        <svg id="volIconOn" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M16 8a5 5 0 0 1 0 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        <svg id="volIconOff" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" hidden><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <input type="range" id="volumeBar" class="volume__bar" min="0" max="100" value="80" aria-label="Volumen">
+    </div>
 
-                <label for="message">Mensaje adicional:</label>
-                <textarea id="message" name="message" required></textarea>
+  </main>
+</div>
 
-                <button type="submit" class="btn">Enviar Consulta</button>
-            </form>
-        </div>
-    </section>
+<!-- Notificación flotante para errores / avisos -->
+<div class="toast" id="toast" role="alert" aria-live="assertive"></div>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-grid">
-                <div class="footer-column">
-                    <img src="img/Logo.png" alt="Logo Taller Valenciano Guayaquil" class="footer-logo">
-                    <p>Km 6 Autopista Terminal Terrestre<br>Pascuales (Narcisa de Jesús), Guayaquil - Ecuador</p>
-                    <p><i class="fas fa-phone"></i> 0978906962</p>
-                    <p><i class="fas fa-envelope"></i> info@jacsautocare.com</p>
-                    <p><i class="fas fa-globe"></i> www.jacsautocare.com</p>
-                </div>
-                <div class="footer-column">
-                    <h4>ATAJOS</h4>
-                    <ul>
-                        <li><a href="#">Pintura Automotriz en Guayaquil</a></li>
-                        <li><a href="#">Car Detailing en Guayaquil</a></li>
-                        <li><a href="#">Tapicería Automotriz en Guayaquil</a></li>
-                        <li><a href="#">Car Wash en Guayaquil</a></li>
-                        <li><a href="#">Lubricadora en Guayaquil</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>SÍGUENOS</h4>
-                    <ul>
-                        <li><i class="fab fa-facebook"></i> <a href="#">Facebook</a></li>
-                        <li><i class="fab fa-instagram"></i> <a href="#">Instagram</a></li>
-                        <li><i class="fab fa-youtube"></i> <a href="#">YouTube</a></li>
-                        <li><i class="fab fa-tiktok"></i> <a href="#">TikTok</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>HORARIOS DE ATENCIÓN</h4>
-                    <div class="horarios">
-                        <div class="horario-item">
-                            <span>Lunes - Viernes:</span>
-                            <span>8:00 - 17:00</span>
-                        </div>
-                        <div class="horario-item">
-                            <span>Sábados:</span>
-                            <span>8:00 - 12:00</span>
-                        </div>
-                        <div class="horario-item">
-                            <span class="domingo">Domingo: NO ATENDEMOS</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Taller Valenciano Guayaquil - Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="js/script.js"></script>
+<script src="js/app.js" defer></script>
 </body>
 </html>

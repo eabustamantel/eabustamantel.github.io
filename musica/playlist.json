@@ -1,0 +1,26 @@
+{
+  "_instrucciones": "Añade tus canciones dentro de esta carpeta 'musica' y agrega una entrada por cada archivo aquí abajo. El campo 'src' debe ser el nombre exacto del archivo. 'cover' es opcional (ruta a una imagen dentro de musica/). Si no pones cover, se usa el disco animado por defecto.",
+  "pistas": [
+    {
+      "titulo": "Onda Amanecer",
+      "artista": "Estudio Demo",
+      "album": "Sesiones de Prueba",
+      "src": "01-onda-amanecer.wav",
+      "cover": ""
+    },
+    {
+      "titulo": "Pulso Nocturno",
+      "artista": "Estudio Demo",
+      "album": "Sesiones de Prueba",
+      "src": "02-pulso-nocturno.wav",
+      "cover": ""
+    },
+    {
+      "titulo": "Deriva Suave",
+      "artista": "Estudio Demo",
+      "album": "Sesiones de Prueba",
+      "src": "03-deriva-suave.wav",
+      "cover": ""
+    }
+  ]
+}

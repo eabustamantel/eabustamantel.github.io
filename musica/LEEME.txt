@@ -1,0 +1,51 @@
+CÓMO AÑADIR TU PROPIA MÚSICA
+=============================
+
+1. Copia tus archivos de audio (.mp3, .wav, .ogg, .m4a) dentro de esta
+   carpeta "musica".
+
+2. Abre el archivo "playlist.json" (también dentro de esta carpeta) y
+   agrega un bloque por cada canción, siguiendo el mismo formato que
+   ya ves en los ejemplos:
+
+   {
+     "titulo": "Nombre de la canción",
+     "artista": "Nombre del artista",
+     "album": "Nombre del álbum",
+     "src": "nombre-exacto-del-archivo.mp3",
+     "cover": ""
+   }
+
+   - "src" debe coincidir EXACTAMENTE con el nombre del archivo que
+     copiaste (incluyendo mayúsculas/minúsculas y extensión).
+   - "cover" es opcional: si quieres una portada, coloca una imagen
+     dentro de "musica" y escribe su nombre aquí, por ejemplo:
+     "cover": "portada-cancion1.jpg"
+   - Puedes borrar o dejar las 3 pistas de demostración que vienen
+     incluidas.
+
+3. Guarda el archivo y recarga la página del reproductor en tu
+   navegador. Las nuevas canciones aparecerán automáticamente en la
+   lista.
+
+ALTERNATIVA SIN EDITAR EL JSON
+-------------------------------
+Si no quieres tocar el archivo playlist.json, también puedes usar el
+botón "Elegir carpeta" que aparece en el reproductor cuando la carpeta
+"musica" no puede leerse (por ejemplo si abres index.html directamente
+con doble clic en vez de usar un servidor local). Ese botón te deja
+seleccionar cualquier carpeta de tu equipo y carga todas las canciones
+que contenga, sin necesidad de editar nada.
+
+NOTA SOBRE SERVIDORES LOCALES
+-------------------------------
+Los navegadores no permiten leer archivos con fetch() cuando abres el
+HTML con doble clic (protocolo file://). Para que la carga automática
+desde playlist.json funcione, sirve la carpeta con un servidor local,
+por ejemplo:
+
+   python3 -m http.server 8000
+
+y luego visita http://localhost:8000 en tu navegador. Si no usas un
+servidor, el reproductor detectará el problema automáticamente y te
+ofrecerá el botón "Elegir carpeta" como alternativa.
