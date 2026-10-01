@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compubust Ecuador - Equipos y Componentes Informáticos</title>
+    <meta name="description" content="Compubust: tarjetas gráficas, procesadores, consolas, memorias y cámaras con garantía y envíos a todo Ecuador. Compra por WhatsApp.">
+    <meta name="theme-color" content="#090d16">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%BB%3C/text%3E%3C/svg%3E">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090d16',
+                        darkCard: '#111827',
+                        accentGreen: '#10B981',
+                        accentCyan: '#06B6D4'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+        .scrollbar-none { scrollbar-width: none; }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        :focus-visible { outline: 2px solid #06B6D4; outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #090d16; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
+
+    <!-- HEADER & NAVBAR -->
+    <header class="sticky top-0 z-40 bg-darkBg/90 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="filterCategory('todos')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-microchip text-black text-xl font-bold"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-wider bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">COMPU<span class="text-white">BUST</span></span>
+                    <span class="block text-[10px] text-cyan-400 tracking-widest font-semibold uppercase">Ecuador Store</span>
+                </div>
+            </div>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Buscar tarjetas gráficas, procesadores, consolas..." class="w-full bg-darkCard/80 border border-gray-700/80 rounded-xl pl-10 pr-4 py-2.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
+                </div>
+            </div>
+
+            <!-- Actions & Cart Button -->
+            <div class="flex items-center space-x-4">
+                <a href="https://wa.me/593984711144?text=Hola,%20necesito%20asesoría%20con%20un%20producto%20informático" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center space-x-2 bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-xl text-sm font-medium hover:bg-emerald-600/30 transition-all">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Soporte WhatsApp</span>
+                </a>
+
+                <!-- Cart trigger -->
+                <button onclick="toggleCartModal()" aria-label="Abrir carrito" class="relative p-2.5 rounded-xl bg-darkCard border border-gray-700 hover:border-cyan-500 text-gray-300 hover:text-cyan-400 transition-all">
+                    <i class="fa-solid fa-cart-shopping text-lg"></i>
+                    <span id="cartBadge" class="absolute -top-1.5 -right-1.5 bg-cyan-500 text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md hidden">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="px-4 pb-3 md:hidden">
+            <div class="relative w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-search"></i>
+                </span>
+                <input type="text" id="searchMobileInput" oninput="handleSearchMobile()" placeholder="Buscar equipos..." class="w-full bg-darkCard border border-gray-700 rounded-xl pl-10 pr-4 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-cyan-500">
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative overflow-hidden py-12 lg:py-20 border-b border-gray-800/60 bg-gradient-to-b from-darkCard/40 to-darkBg">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(6,182,212,0.08),transparent_50%)]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full text-xs font-semibold text-cyan-400">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <span>Envío inmediato en Ecuador 🇪🇨</span>
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                        Potencia tu <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">Setup & Rendimiento</span>
+                    </h1>
+                    <p class="text-gray-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
+                        Encuentra tarjetas gráficas de última generación, procesadores de alto rendimiento, consolas, memorias y cámaras con garantía directa y pago seguro.
+                    </p>
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+                        <button onclick="scrollToCatalog()" class="bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-black font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center space-x-2">
+                            <span>Ver Catálogo</span>
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                        <a href="https://wa.me/593984711144?text=Hola,%20quiero%20armar%20una%20PC%20a%20medida" target="_blank" rel="noopener noreferrer" class="bg-darkCard hover:bg-gray-800 border border-gray-700 font-semibold px-6 py-3.5 rounded-xl transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-screwdriver-wrench text-cyan-400"></i>
+                            <span>Cotizar PC Gamer</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Graphic Card / Banner -->
+                <div class="relative flex justify-center">
+                    <div class="w-full max-w-md bg-gradient-to-br from-darkCard to-gray-900 border border-gray-800 p-6 rounded-3xl shadow-2xl relative">
+                        <div class="absolute -top-3 -right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-black text-xs font-extrabold px-3 py-1 rounded-full shadow-lg">
+                            ¡OFERTA DESTACADA!
+                        </div>
+                        <div class="rounded-2xl overflow-hidden bg-gray-950 mb-4 h-56 flex items-center justify-center relative border border-gray-800">
+                            <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80" alt="GPU RTX Featured" class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/111827/06B6D4?text=RTX+4090';">
+                            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-lg text-xs font-bold text-cyan-400 border border-cyan-500/30">
+                                NVIDIA GeForce RTX
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">NVIDIA RTX 4090 Gaming OC 24GB</h3>
+                        <p class="text-gray-400 text-xs mb-4">Arquitectura Ada Lovelace, refrigeración líquida avanzada y rendimiento extremo para 4K.</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 block">Precio Especial</span>
+                                <span class="text-2xl font-black text-cyan-400">$1,899.00</span>
+                            </div>
+                            <button onclick="buyDirect('NVIDIA RTX 4090 Gaming OC 24GB', 1899, 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all flex items-center space-x-2 shadow-lg shadow-emerald-600/20">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                                <span>Comprar x WhatsApp</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CATALOG SECTION -->
+    <main id="catalog" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Section Title & Filter Tabs -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-gray-800 gap-4">
+            <div>
+                <span class="text-cyan-400 text-xs font-semibold uppercase tracking-wider">Catálogo Actualizado</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Componentes y Equipos Disponibles</h2>
+            </div>
+
+            <!-- Categories Scrollable Container -->
+            <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+                <button onclick="filterCategory('todos')" id="cat-todos" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-cyan-500 text-black shadow-md shadow-cyan-500/20">
+                    Todos
+                </button>
+                <button onclick="filterCategory('gpu')" id="cat-gpu" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-darkCard text-gray-300 border border-gray-700 hover:border-cyan-500">
+                    Tarjetas Gráficas
+                </button>
+                <button onclick="filterCategory('cpu')" id="cat-cpu" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-darkCard text-gray-300 border border-gray-700 hover:border-cyan-500">
+                    Procesadores
+                </button>
+                <button onclick="filterCategory('consolas')" id="cat-consolas" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-darkCard text-gray-300 border border-gray-700 hover:border-cyan-500">
+                    Consolas
+                </button>
+                <button onclick="filterCategory('memorias')" id="cat-memorias" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-darkCard text-gray-300 border border-gray-700 hover:border-cyan-500">
+                    Memorias & SSD
+                </button>
+                <button onclick="filterCategory('camaras')" id="cat-camaras" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-darkCard text-gray-300 border border-gray-700 hover:border-cyan-500">
+                    Cámaras & Streaming
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-5 text-sm">
+            <span id="resultCount" class="text-gray-400"></span>
+            <label class="flex items-center space-x-2 text-gray-400">
+                <span>Ordenar:</span>
+                <select id="sortSelect" onchange="renderProducts()" class="bg-darkCard border border-gray-700 rounded-lg px-3 py-1.5 text-gray-200 text-sm focus:outline-none focus:border-cyan-500">
+                    <option value="default">Destacados</option>
+                    <option value="asc">Precio: menor a mayor</option>
+                    <option value="desc">Precio: mayor a menor</option>
+                    <option value="name">Nombre (A-Z)</option>
+                </select>
+            </label>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Products injected dynamically via JavaScript -->
+        </div>
+
+        <!-- Empty state for search -->
+        <div id="noResults" class="hidden text-center py-20">
+            <div class="w-16 h-16 bg-gray-800 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-face-frown"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">No se encontraron productos</h3>
+            <p class="text-gray-400 text-sm">Intenta con otro término de búsqueda o categoría.</p>
+            <button onclick="resetFilters()" class="mt-4 bg-cyan-500 text-black font-bold px-4 py-2 rounded-xl text-sm">Ver todos los productos</button>
+        </div>
+    </main>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="detailModal" role="dialog" aria-modal="true" onclick="if(event.target===this)closeDetailModal()" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden">
+        <div class="bg-darkCard border border-gray-800 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative transform transition-all">
+            <button onclick="closeDetailModal()" aria-label="Cerrar" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/60 text-gray-300 hover:text-white flex items-center justify-center border border-gray-700 transition-all">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <div class="bg-gray-950 p-6 flex items-center justify-center border-b md:border-b-0 md:border-r border-gray-800">
+                    <img id="modalImg" src="" alt="Producto" class="max-h-64 object-contain rounded-xl" onerror="this.src='https://placehold.co/400x300/111827/06B6D4?text=Compubust';">
+                </div>
+                <div class="p-6 flex flex-col justify-between">
+                    <div>
+                        <span id="modalCategory" class="text-xs font-bold uppercase tracking-wider text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-md inline-block mb-2">Categoría</span>
+                        <h3 id="modalTitle" class="text-2xl font-bold text-white mb-2">Nombre del Producto</h3>
+                        <p id="modalPrice" class="text-2xl font-extrabold text-cyan-400 mb-4">$0.00</p>
+                        <p id="modalDesc" class="text-gray-400 text-sm mb-6 leading-relaxed">Descripción detallada del producto informático.</p>
+                        <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-800 mb-6 space-y-2 text-xs text-gray-300">
+                            <div class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400"></i><span>Garantía oficial de 1 año en Ecuador</span></div>
+                            <div class="flex items-center space-x-2"><i class="fa-solid fa-truck text-cyan-400"></i><span>Envío seguro a todo el país (Servientrega / Tramaco)</span></div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="modalAddToCartBtn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 border border-gray-700">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Añadir al Carrito</span>
+                        </button>
+                        <button id="modalBuyWhatsappBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Comprar Ya</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART SIDEBAR / MODAL -->
+    <div id="cartModal" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onclick="toggleCartModal()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-darkCard border-l border-gray-800 shadow-2xl flex flex-col">
+                <!-- Cart Header -->
+                <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-cart-shopping text-cyan-400 text-lg"></i>
+                        <h3 class="text-lg font-bold text-white">Tu Carrito de Compras</h3>
+                    </div>
+                    <button onclick="toggleCartModal()" class="w-8 h-8 rounded-lg bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Cart Items List -->
+                <div id="cartItemsList" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-gray-800/50">
+                    <!-- Dynamic cart items -->
+                </div>
+
+                <!-- Cart Footer / Total -->
+                <div class="p-6 border-t border-gray-800 bg-gray-950/50 space-y-4">
+                    <div class="flex items-center justify-between text-sm text-gray-400">
+                        <span>Subtotal</span>
+                        <span id="cartSubtotal" class="font-bold text-white">$0.00</span>
+                    </div>
+                    <div class="flex items-center justify-between text-base font-bold text-white">
+                        <span>Total Estimado</span>
+                        <span id="cartTotal" class="text-xl text-cyan-400">$0.00</span>
+                    </div>
+                    <button onclick="checkoutCartWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                        <span>Finalizar Compra por WhatsApp</span>
+                    </button>
+                    <p class="text-[11px] text-center text-gray-500">Se abrirá WhatsApp con el detalle completo de tus productos para coordinar pago y envío.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-950 border-t border-gray-800 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center">
+                            <i class="fa-solid fa-microchip text-black text-sm font-bold"></i>
+                        </div>
+                        <span class="text-lg font-black tracking-wider text-white">COMPU<span class="text-cyan-400">BUST</span></span>
+                    </div>
+                    <p class="text-gray-400 text-xs leading-relaxed">
+                        Tu tienda de confianza en Ecuador para hardware de alta gama, componentes para PC, consolas y accesorios gaming profesionales.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Categorías</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="#catalog" onclick="filterCategory('gpu')" class="hover:text-cyan-400 transition-colors">Tarjetas Gráficas</a></li>
+                        <li><a href="#catalog" onclick="filterCategory('cpu')" class="hover:text-cyan-400 transition-colors">Procesadores CPU</a></li>
+                        <li><a href="#catalog" onclick="filterCategory('consolas')" class="hover:text-cyan-400 transition-colors">Consolas de Videojuegos</a></li>
+                        <li><a href="#catalog" onclick="filterCategory('memorias')" class="hover:text-cyan-400 transition-colors">Memorias RAM y SSD</a></li>
+                        <li><a href="#catalog" onclick="filterCategory('camaras')" class="hover:text-cyan-400 transition-colors">Cámaras y Streaming</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Atención al Cliente</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="https://wa.me/593984711144" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">Soporte Técnico WhatsApp</a></li>
+                        <li><a href="tel:+593984711144" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-phone mr-1"></i>+593 98 471 1144</a></li>
+                        <li><span class="block">Lunes a Sábado: 09:00 - 19:00</span></li>
+                        <li><span class="block">Guayaquil & Envíos Nacionales</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Pagos Seguros</h4>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-gray-900 border border-gray-800 text-gray-300 text-xs px-3 py-1.5 rounded-lg">Transferencia</span>
+                        <span class="bg-gray-900 border border-gray-800 text-gray-300 text-xs px-3 py-1.5 rounded-lg">Depósito</span>
+                        <span class="bg-gray-900 border border-gray-800 text-gray-300 text-xs px-3 py-1.5 rounded-lg">Tarjetas</span>
+                    </div>
+                    <p class="text-[11px] text-gray-500">© <span id="year">2026</span> Compubust Ecuador. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FLOATING WHATSAPP -->
+    <a href="https://wa.me/593984711144?text=Hola%20Compubust,%20necesito%20información" target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp" class="fixed bottom-5 left-5 z-40 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center shadow-xl shadow-emerald-500/30 transition-all">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        const WHATSAPP_NUMBER = "593984711144"; // +593 98 471 1144 (formato internacional, sin + ni espacios)
+
+        const products = [
+            {
+                id: 1,
+                name: "NVIDIA GeForce RTX 4080 Super 16GB",
+                category: "gpu",
+                categoryName: "Tarjetas Gráficas",
+                price: 1199.00,
+                image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80",
+                description: "Rendimiento soberbio con DLSS 3 y trazado de rayos completo. Ideal para creadores de contenido y gamers exigentes en resolución 4K."
+            },
+            {
+                id: 2,
+                name: "AMD Radeon RX 7900 XTX 24GB",
+                category: "gpu",
+                categoryName: "Tarjetas Gráficas",
+                price: 999.00,
+                image: "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&w=600&q=80",
+                description: "Potencia gráfica excepcional con 24GB de VRAM GDDR6, diseñada para gaming de ultra velocidad y multitarea pesada."
+            },
+            {
+                id: 3,
+                name: "Procesador Intel Core i9-14900K",
+                category: "cpu",
+                categoryName: "Procesadores",
+                price: 589.00,
+                image: "https://images.unsplash.com/photo-1555680202-c86f0e12f086?auto=format&fit=crop&w=600&q=80",
+                description: "Hasta 6.0 GHz de velocidad de reloj. 24 núcleos (8 P-cores y 16 E-cores) para un rendimiento multitarea inigualable."
+            },
+            {
+                id: 4,
+                name: "Procesador AMD Ryzen 9 7950X3D",
+                category: "cpu",
+                categoryName: "Procesadores",
+                price: 649.00,
+                image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80",
+                description: "La mejor opción para gaming y productividad con tecnología 3D V-Cache para latencias ultrabajas."
+            },
+            {
+                id: 5,
+                name: "Sony PlayStation 5 Slim 1TB + DualSense",
+                category: "consolas",
+                categoryName: "Consolas",
+                price: 549.00,
+                image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=600&q=80",
+                description: "Diseño más esbelto y elegante. Disfruta de tiempos de carga ultrarrápidos con SSD de alta velocidad y juegos inmersivos."
+            },
+            {
+                id: 6,
+                name: "Microsoft Xbox Series X 1TB",
+                category: "consolas",
+                categoryName: "Consolas",
+                price: 529.00,
+                image: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=600&q=80",
+                description: "La Xbox más rápida y potente de la historia. Verdadero gaming en 4K hasta 120 FPS con retrocompatibilidad avanzada."
+            },
+            {
+                id: 7,
+                name: "Corsair Vengeance RGB 32GB (2x16GB) DDR5 6000MHz",
+                category: "memorias",
+                categoryName: "Memorias & SSD",
+                price: 139.00,
+                image: "https://images.unsplash.com/photo-1562976540-1502c2145b86?auto=format&fit=crop&w=600&q=80",
+                description: "Memoria RAM DDR5 de alto rendimiento con iluminación RGB dinámica de diez zonas y perfil XMP 3.0."
+            },
+            {
+                id: 8,
+                name: "Samsung 990 PRO NVMe M.2 SSD 2TB",
+                category: "memorias",
+                categoryName: "Memorias & SSD",
+                price: 189.00,
+                image: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=600&q=80",
+                description: "Velocidades de lectura de hasta 7,450 MB/s. Rendimiento definitivo para juegos pesados y renderizado 8K."
+            },
+            {
+                id: 9,
+                name: "Cámara Sony ZV-E10 para Streaming y Vlog",
+                category: "camaras",
+                categoryName: "Cámaras & Streaming",
+                price: 749.00,
+                image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80",
+                description: "Sensor APS-C de objetivos intercambiables, enfoque automático avanzado y transmisión en vivo USB directa en alta definición."
+            },
+            {
+                id: 10,
+                name: "Logitech StreamCam Full HD 1080p 60FPS",
+                category: "camaras",
+                categoryName: "Cámaras & Streaming",
+                price: 149.00,
+                image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&q=80",
+                description: "Optimizada para creadores, encuadre automático por IA y nitidez superior en condiciones de iluminación compleja."
+            },
+            {
+                id: 11,
+                name: "NVIDIA GeForce RTX 4070 Super 12GB",
+                category: "gpu",
+                categoryName: "Tarjetas Gráficas",
+                price: 679.00,
+                image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+                description: "Excelente equilibrio entre precio y potencia para jugar en 1440p con máximos gráficos y trazado de rayos."
+            },
+            {
+                id: 12,
+                name: "Nintendo Switch OLED Model",
+                category: "consolas",
+                categoryName: "Consolas",
+                price: 369.00,
+                image: "https://images.unsplash.com/photo-1578303512597-81e6cc155b12?auto=format&fit=crop&w=600&q=80",
+                description: "Pantalla OLED de 7 pulgadas con colores intensos, soporte ajustable ancho y audio mejorado para juego portátil."
+            }
+        ];
+
+        let currentCategory = 'todos';
+        let searchQuery = '';
+        let cart = [];
+        try { cart = JSON.parse(localStorage.getItem('compubust_cart')) || []; } catch (e) { cart = []; }
+        const saveCart = () => { try { localStorage.setItem('compubust_cart', JSON.stringify(cart)); } catch (e) {} };
+
+        function syncScrollLock() {
+            const open = !document.getElementById('detailModal').classList.contains('hidden') ||
+                         !document.getElementById('cartModal').classList.contains('hidden');
+            document.body.classList.toggle('overflow-hidden', open);
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Update active state of buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-black', 'shadow-md', 'shadow-cyan-500/20');
+                btn.classList.add('bg-darkCard', 'text-gray-300', 'border', 'border-gray-700');
+            });
+            const activeBtn = document.getElementById(`cat-${category}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-darkCard', 'text-gray-300', 'border', 'border-gray-700');
+                activeBtn.classList.add('bg-cyan-500', 'text-black', 'shadow-md', 'shadow-cyan-500/20');
+            }
+
+            renderProducts();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            document.getElementById('searchMobileInput').value = searchQuery;
+            renderProducts();
+        }
+
+        function handleSearchMobile() {
+            searchQuery = document.getElementById('searchMobileInput').value.toLowerCase().trim();
+            document.getElementById('searchInput').value = searchQuery;
+            renderProducts();
+        }
+
+        function resetFilters() {
+            currentCategory = 'todos';
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchMobileInput').value = '';
+            filterCategory('todos');
+        }
+
+        function scrollToCatalog() {
+            document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const noResults = document.getElementById('noResults');
+            
+            const filtered = products.filter(p => {
+                const matchesCategory = currentCategory === 'todos' || p.category === currentCategory;
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery) || p.description.toLowerCase().includes(searchQuery) || p.categoryName.toLowerCase().includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            const sort = document.getElementById('sortSelect').value;
+            if (sort === 'asc') filtered.sort((a, b) => a.price - b.price);
+            else if (sort === 'desc') filtered.sort((a, b) => b.price - a.price);
+            else if (sort === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+            document.getElementById('resultCount').textContent = `${filtered.length} producto${filtered.length !== 1 ? 's' : ''}`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+            grid.innerHTML = filtered.map(product => `
+                <div class="bg-darkCard border border-gray-800 rounded-3xl overflow-hidden hover:border-cyan-500/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
+                    <div>
+                        <div class="relative h-48 bg-gray-950 overflow-hidden cursor-pointer" onclick="openDetailModal(${product.id})">
+                            <img src="${product.image}" alt="${product.name}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x300/111827/06B6D4?text=Compubust';">
+                            <span class="absolute top-3 left-3 bg-black/70 backdrop-blur-md text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-cyan-500/30 uppercase">
+                                ${product.categoryName}
+                            </span>
+                        </div>
+                        <div class="p-5">
+                            <h3 onclick="openDetailModal(${product.id})" class="text-base font-bold text-white mb-2 hover:text-cyan-400 transition-colors cursor-pointer line-clamp-2">${product.name}</h3>
+                            <p class="text-gray-400 text-xs mb-4 line-clamp-2">${product.description}</p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0 flex items-center justify-between border-t border-gray-800/60 mt-auto">
+                        <div>
+                            <span class="text-[10px] text-gray-500 block uppercase">Precio</span>
+                            <span class="text-xl font-black text-cyan-400">$${product.price.toFixed(2)}</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="addToCart(${product.id})" title="Añadir al carrito" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-cyan-400 flex items-center justify-center transition-all border border-gray-700">
+                                <i class="fa-solid fa-cart-plus text-sm"></i>
+                            </button>
+                            <button onclick="buyProduct(${product.id})" title="Comprar por WhatsApp" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs transition-all flex items-center space-x-1 shadow-md shadow-emerald-600/20">
+                                <i class="fa-brands fa-whatsapp text-base"></i>
+                                <span>Comprar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openDetailModal(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('modalImg').src = product.image;
+            document.getElementById('modalCategory').innerText = product.categoryName;
+            document.getElementById('modalTitle').innerText = product.name;
+            document.getElementById('modalPrice').innerText = `$${product.price.toFixed(2)}`;
+            document.getElementById('modalDesc').innerText = product.description;
+
+            document.getElementById('modalAddToCartBtn').onclick = function() {
+                addToCart(product.id);
+                closeDetailModal();
+            };
+
+            document.getElementById('modalBuyWhatsappBtn').onclick = function() {
+                buyDirect(product.name, product.price, product.image);
+            };
+
+            document.getElementById('detailModal').classList.remove('hidden');
+            syncScrollLock();
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+            syncScrollLock();
+        }
+
+        // Direct buy action via WhatsApp with full product details
+        function buyDirect(productName, price, image) {
+            const message = `¡Hola! 👋 Estoy interesado en comprar el siguiente producto de Compubust Ecuador:\n\n*${productName}*\nPrecio: *$${price.toFixed(2)}*\n\n¿Me confirman disponibilidad y métodos de pago/envío?`;
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function buyProduct(id) {
+            const p = products.find(x => x.id === id);
+            if (p) buyDirect(p.name, p.price, p.image);
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartBadge();
+            renderCartItems();
+            showToast(`¡Añadido al carrito: ${product.name}!`);
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartBadge();
+            renderCartItems();
+        }
+
+        function updateQuantity(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(id);
+                } else {
+                    updateCartBadge();
+                    renderCartItems();
+                }
+            }
+        }
+
+        function updateCartBadge() {
+            saveCart();
+            const badge = document.getElementById('cartBadge');
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            if (totalCount > 0) {
+                badge.innerText = totalCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function toggleCartModal() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('hidden');
+            syncScrollLock();
+            if (!modal.classList.contains('hidden')) {
+                renderCartItems();
+            }
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cartItemsList');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const totalEl = document.getElementById('cartTotal');
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-500 space-y-3">
+                        <i class="fa-solid fa-cart-shopping text-4xl mb-2 text-gray-700"></i>
+                        <p class="text-sm">Tu carrito está vacío.</p>
+                        <button onclick="toggleCartModal()" class="text-xs text-cyan-400 font-semibold underline">Explorar productos</button>
+                    </div>
+                `;
+                subtotalEl.innerText = '$0.00';
+                totalEl.innerText = '$0.00';
+                return;
+            }
+
+            let subtotal = 0;
+            container.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                return `
+                    <div class="py-4 flex items-center space-x-4">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-xl bg-gray-900 border border-gray-800" onerror="this.src='https://placehold.co/100x100/111827/06B6D4?text=Item';">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-bold text-white truncate">${item.name}</h4>
+                            <p class="text-xs text-cyan-400 font-semibold">$${item.price.toFixed(2)} c/u</p>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 flex items-center justify-center text-xs">-</button>
+                                <span class="text-xs font-bold text-white">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 flex items-center justify-center text-xs">+</button>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm font-bold text-white block">$${itemTotal.toFixed(2)}</span>
+                            <button onclick="removeFromCart(${item.id})" class="text-gray-500 hover:text-red-400 text-xs mt-2"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
+            totalEl.innerText = `$${subtotal.toFixed(2)}`;
+        }
+
+        function checkoutCartWhatsApp() {
+            if (cart.length === 0) {
+                showToast("El carrito está vacío.");
+                return;
+            }
+
+            let message = "¡Hola! 👋 Deseo realizar la compra de los siguientes productos en Compubust Ecuador:\n\n";
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                message += `${index + 1}. *${item.name}*\n   Cantidad: ${item.quantity} | Subtotal: $${itemTotal.toFixed(2)}\n\n`;
+            });
+
+            message += `*TOTAL ESTIMADO: $${total.toFixed(2)}*\n\nPor favor, confirmarme datos para el pago y envío. ¡Gracias!`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function showToast(text) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'bg-cyan-500 text-black font-bold text-xs px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 animate-bounce transition-all';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-base"></i><span>${text}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize catalog render on load
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            closeDetailModal();
+            if (!document.getElementById('cartModal').classList.contains('hidden')) toggleCartModal();
+        });
+
+        window.onload = function() {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            updateCartBadge();
+            renderCartItems();
+            renderProducts();
+        };
+    </script>
+</body>
+</html>
